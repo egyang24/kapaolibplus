@@ -277,7 +277,7 @@ def newpos_to_grid(newpos_frame, plot=False):
 
 def overlay_indices_newpos():
     '''
-    Number subapertures 0..119 on an image by overlaying text
+    Number actuator positions 0..119 on an image by overlaying text
     '''
     labels = newpos_to_grid(range(120))
     for col in range(12):
