@@ -14,6 +14,8 @@ import numpy as np
 UTC_TZ = dateutil.tz.gettz('UTC')
 
 TOTAL_SUBAPS = 97
+TOTAL_XSLOPES = 97
+TOTAL_YSLOPES = 97
 TOP_N_SUBAPS = 50
 TOTAL_NEWPOS = 120
 
@@ -116,7 +118,8 @@ class Slopes(object):
     def __init__(self, filename):
         self.filename = filename
         self.data, self.timestamps, self.dt = parse_telem_table(filename)
-
+        self.median_by_slope = np.median(self.data, axis=0)#EYang
+        
         self.overall_slopes = np.average(self.data, axis=1)
         self.subtracted_data = self.data - self.overall_slopes[:,np.newaxis]
     
@@ -249,6 +252,8 @@ def load_reconstructor(filename):
 Emily Yang's additions to Joseph Long's kapaolib file
 '''
 
+#Turn newpos data into a heatmap grid
+
 def newpos_to_grid(newpos_frame, plot=False):
     """
     Turn a 1D list of newpos values to a 12x12 grid
@@ -289,3 +294,50 @@ def overlay_indices_newpos():
                      fontsize=8,
                      path_effects=[patheffects.withStroke(linewidth=3, foreground="black")]
                 )
+
+
+
+#Turn slope data into a heatmap grid (basically same as subaps_to_grid, renamed
+#to reduce confusion)
+
+
+def slope_to_grid(slope_frame, plot=False):
+    """
+    Turn a 1D list of slope values to an 11x11 grid
+    
+    """
+    grid = np.ndarray((11,11))
+    grid[:,:] = np.nan
+    grid[0][3:8] = slope_frame[0:5]
+    grid[1][2:9] = slope_frame[5:12]
+    grid[2][1:10] = slope_frame[12:21]
+    grid[3] = slope_frame[21:32]
+    grid[4] = slope_frame[32:43]
+    grid[5] = slope_frame[43:54]
+    grid[6] = slope_frame[54:65]
+    grid[7] = slope_frame[65:76]
+    grid[8][1:10] = slope_frame[76:85]
+    grid[9][2:9] = slope_frame[85:92]
+    grid[10][3:8] = slope_frame[92:97]
+    grid = grid.T # we're filling in row-by-row from the top, but numbering starts
+                  # in the bottom left with zero and proceeds column-by-column
+    if plot:
+        plt.imshow(grid, origin='bottom')
+    return grid
+
+
+def overlay_indices_slope():
+    '''
+    Number slopes 0..96 on an image by overlaying text
+    '''
+    labels = slope_to_grid(range(97))
+    for col in range(11):
+        for row in range(11):
+            if not np.isnan(labels[row][col]):
+                plt.text(
+                     col - 0.25, row - 0.25, int(labels[row][col]),
+                     color='white',
+                     fontsize=10,
+                     path_effects=[patheffects.withStroke(linewidth=3, foreground="black")]
+                )
+
