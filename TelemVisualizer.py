@@ -330,17 +330,18 @@ def telemvisualizer(subdirectory,filenum):
         tt_1[i] = new_pos.data[i][120]
         tt_2[i] = new_pos.data[i][122]
         
-    plt.figure(figsize=(12,6))
-    plt.subplot(2,1,1)
+    plt.figure(figsize=(12,9))
+    plt.subplots_adjust(hspace=.5)
+    plt.subplot(3,1,1)
     plt.plot(new_pos.timestamps - new_pos.timestamps[0],tt_1)
     plt.ylabel("Tip/tilt index 120")
+    plt.title('Tip/Tilt as  Function of Time',fontsize=16)
     
-    plt.subplot(2,1,2)
+    plt.subplot(3,1,2)
     plt.plot(new_pos.timestamps - new_pos.timestamps[0],tt_2)
     plt.ylabel("Tip/tilt index 122")
     plt.xlabel("Time (ms)")
     
-    plt.suptitle('Tip/Tilt as a Function of Time',fontsize=16)
     
     
     #pinned actuators as a function of time
@@ -351,7 +352,7 @@ def telemvisualizer(subdirectory,filenum):
             if new_pos.data[i][j] <= 100 or new_pos.data[i][j] >= 64900:
                 pinned[i] = pinned[i] + 1
                 
-    plt.figure(figsize=(12,3))
+    plt.subplot(3,1,3)
     plt.plot(new_pos.timestamps - new_pos.timestamps[0],pinned)
     plt.ylabel("Number of pinned actuators")
     plt.xlabel("Time (ms)")
