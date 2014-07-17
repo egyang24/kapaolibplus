@@ -1,14 +1,14 @@
-def telemvisualizer(subdirectory,filenum):
+def telemvisualizer(subdirectory,filenum,save=False):
     '''
     Visualizes slopes, intensities, and newpos data in a heatmap grid, and 
     plots tip/tilt and pinned actuators as a function of time.
-    Inputs: subdirectory and filenum, both strings
+    Inputs: subdirectory & filenum = strings, save = optional boolean
     Outputs: 6 figures, 4 with the heatmap grids and 2 plots as a function of time
     '''
     
     
     from matplotlib import pyplot as plt
-    from numpy import *
+    import numpy as np
     
     from kapaolibplus import (subaps_to_grid, overlay_indices, Slopes, IntensityMap, DMPositions, newpos_to_grid, overlay_indices_newpos, slope_to_grid, overlay_indices_slope)
         
@@ -68,9 +68,9 @@ def telemvisualizer(subdirectory,filenum):
     
     # Newpos
     
-    newposshort_t0 = zeros(120)
-    newposshort_mid = zeros(120)
-    newposshort_last = zeros(120)
+    newposshort_t0 = np.zeros(120)
+    newposshort_mid = np.zeros(120)
+    newposshort_last = np.zeros(120)
     
     for i in range(120):
         newposshort_t0[i] = new_pos.data[0][i]
@@ -94,7 +94,7 @@ def telemvisualizer(subdirectory,filenum):
     
     # X Slope
         
-    plt.figure(figsize=(20,10))
+    figx = plt.figure(figsize=(20,10))
     plt.subplot(241)
     plt.imshow(slope_to_grid(slope_x.data[0]), origin='lower',vmin = xmin, vmax = xmax)
     overlay_indices_slope()
@@ -146,11 +146,11 @@ def telemvisualizer(subdirectory,filenum):
     
     plt.suptitle('X Slope Maps, Fixed and Unfixed',fontsize=16)
     
-    
+
     
     # Y Slope
         
-    plt.figure(figsize=(20,10))
+    figy = plt.figure(figsize=(20,10))
     plt.subplot(241)
     plt.imshow(slope_to_grid(slope_y.data[0]), origin='lower',vmin = ymin, vmax = ymax)
     overlay_indices_slope()
@@ -204,11 +204,11 @@ def telemvisualizer(subdirectory,filenum):
     
     plt.suptitle('Y Slope Maps, Fixed and Unfixed',fontsize=16)
     
-    
+
     
     # Intensity
         
-    plt.figure(figsize=(20,10))
+    figint = plt.figure(figsize=(20,10))
     plt.subplot(241)
     plt.imshow(subaps_to_grid(intensity_map.data[0]), origin='lower',vmin = intensmin, vmax = intensmax)
     overlay_indices()
@@ -262,12 +262,12 @@ def telemvisualizer(subdirectory,filenum):
     
     plt.suptitle('Intensity Maps, Fixed and Unfixed',fontsize=16)
     
-    
+
     
     
     # New Pos
         
-    plt.figure(figsize=(20,10))
+    fignp = plt.figure(figsize=(20,10))
     plt.subplot(241)
     plt.imshow(newpos_to_grid(new_pos.data[0]), origin='lower',vmin = newposmin, vmax = newposmax)
     overlay_indices_newpos()
@@ -319,18 +319,20 @@ def telemvisualizer(subdirectory,filenum):
     plt.title('median positions')
     
     plt.suptitle('DM Position (New_Pos) Maps, Fixed and Unfixed',fontsize=16)
+
+
     
     
     #Tip/tilt as a function of time
     
     #pulling out the 120th and 122nd index for each time step
-    tt_1 = zeros(length)
-    tt_2 = zeros(length)
+    tt_1 = np.zeros(length)
+    tt_2 = np.zeros(length)
     for i in range(0,length):
         tt_1[i] = new_pos.data[i][120]
         tt_2[i] = new_pos.data[i][122]
         
-    plt.figure(figsize=(12,9))
+    figtime = plt.figure(figsize=(12,9))
     plt.subplots_adjust(hspace=.5)
     plt.subplot(3,1,1)
     plt.plot(new_pos.timestamps - new_pos.timestamps[0],tt_1)
@@ -346,7 +348,7 @@ def telemvisualizer(subdirectory,filenum):
     
     #pinned actuators as a function of time
     
-    pinned = zeros(length)
+    pinned = np.zeros(length)
     for i in range(0,length):
         for j in range(0,120):
             if new_pos.data[i][j] <= 100 or new_pos.data[i][j] >= 64900:
@@ -357,4 +359,14 @@ def telemvisualizer(subdirectory,filenum):
     plt.ylabel("Number of pinned actuators")
     plt.xlabel("Time (ms)")
     plt.title("Pinned Actuators as a Function of Time",fontsize=16)
+    
+    if save == True:
+        figtime.savefig('./' + subdirectory + '/' + 'fig_tt_pinned_' + filenum + '.png', dpi=300)   
+        fignp.savefig('./' + subdirectory + '/' + 'fig_new_pos_' + filenum + '.png', dpi=300)
+        figint.savefig('./' + subdirectory + '/' + 'fig_intensity_map_' + filenum + '.png', dpi=300)    
+        figy.savefig('./' + subdirectory + '/' + 'fig_slope_y_' + filenum + '.png', dpi=300)    
+        figx.savefig('./' + subdirectory + '/' + 'fig_slope_x_' + filenum + '.png', dpi=300)
+ 
+    
+    
     plt.show()
