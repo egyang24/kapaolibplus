@@ -23,18 +23,21 @@ def telemvisualizer(subdirectory,filenum,save=False):
     
     
     
-    length = len(slope_x.data)
+    lenx = len(slope_x.data)
+    leny = len(slope_y.data)
+    leni = len(intensity_map.data)
+    lenn = len(new_pos.data)
     
     
     #finding min and max values at each of the 3 relevant time steps, then the overall min and max values between the 3
     
     # X slope
     xmin_t0 = min(slope_x.data[0])
-    xmin_mid = min(slope_x.data[int(length/2)])
-    xmin_last = min(slope_x.data[length - 1])
+    xmin_mid = min(slope_x.data[int(lenx/2)])
+    xmin_last = min(slope_x.data[lenx - 1])
     xmax_t0 = max(slope_x.data[0])
-    xmax_mid = max(slope_x.data[int(length/2)])
-    xmax_last = max(slope_x.data[length - 1])
+    xmax_mid = max(slope_x.data[int(lenx/2)])
+    xmax_last = max(slope_x.data[lenx - 1])
     
     xmin = min(xmin_t0,xmin_mid,xmin_last)
     xmax = max(xmax_t0,xmax_mid,xmax_last)
@@ -43,11 +46,11 @@ def telemvisualizer(subdirectory,filenum,save=False):
     # Y slope
     
     ymin_t0 = min(slope_y.data[0])
-    ymin_mid = min(slope_y.data[int(length/2)])
-    ymin_last = min(slope_y.data[length - 1])
+    ymin_mid = min(slope_y.data[int(leny/2)])
+    ymin_last = min(slope_y.data[leny - 1])
     ymax_t0 = max(slope_y.data[0])
-    ymax_mid = max(slope_y.data[int(length/2)])
-    ymax_last = max(slope_y.data[length - 1])
+    ymax_mid = max(slope_y.data[int(leny/2)])
+    ymax_last = max(slope_y.data[leny - 1])
     
     ymin = min(ymin_t0,ymin_mid,ymin_last)
     ymax = max(ymax_t0,ymax_mid,ymax_last)
@@ -56,11 +59,11 @@ def telemvisualizer(subdirectory,filenum,save=False):
     # Intensities
     
     intensmin_t0 = min(intensity_map.data[0])
-    intensmin_mid = min(intensity_map.data[int(length/2)])
-    intensmin_last = min(intensity_map.data[length - 1])
+    intensmin_mid = min(intensity_map.data[int(leni/2)])
+    intensmin_last = min(intensity_map.data[leni - 1])
     intensmax_t0 = max(intensity_map.data[0])
-    intensmax_mid = max(intensity_map.data[int(length/2)])
-    intensmax_last = max(intensity_map.data[length - 1])
+    intensmax_mid = max(intensity_map.data[int(leni/2)])
+    intensmax_last = max(intensity_map.data[leni - 1])
     
     intensmin = min(intensmin_t0,intensmin_mid,intensmin_last)
     intensmax = max(intensmax_t0,intensmax_mid,intensmax_last)
@@ -74,8 +77,8 @@ def telemvisualizer(subdirectory,filenum,save=False):
     
     for i in range(120):
         newposshort_t0[i] = new_pos.data[0][i]
-        newposshort_mid[i] = new_pos.data[int(length/2)][i]
-        newposshort_last[i] = new_pos.data[length - 1][i]
+        newposshort_mid[i] = new_pos.data[int(lenn/2)][i]
+        newposshort_last[i] = new_pos.data[lenn - 1][i]
         
     newposmin_t0 = min(newposshort_t0)
     newposmin_mid = min(newposshort_mid)
@@ -102,13 +105,13 @@ def telemvisualizer(subdirectory,filenum,save=False):
     plt.title('first time step')
     
     plt.subplot(242)
-    plt.imshow(slope_to_grid(slope_x.data[int(length/2)]), origin='lower',vmin = xmin, vmax = xmax)
+    plt.imshow(slope_to_grid(slope_x.data[int(lenx/2)]), origin='lower',vmin = xmin, vmax = xmax)
     overlay_indices_slope()
     plt.colorbar()
     plt.title('middle time step')
     
     plt.subplot(243)
-    plt.imshow(slope_to_grid(slope_x.data[length-1]), origin='lower',vmin = xmin, vmax = xmax)
+    plt.imshow(slope_to_grid(slope_x.data[lenx-1]), origin='lower',vmin = xmin, vmax = xmax)
     overlay_indices_slope()
     plt.colorbar()
     plt.title('last time step')
@@ -127,13 +130,13 @@ def telemvisualizer(subdirectory,filenum,save=False):
     plt.title('first time step')
     
     plt.subplot(246)
-    plt.imshow(slope_to_grid(slope_x.data[int(length/2)]), origin='lower')
+    plt.imshow(slope_to_grid(slope_x.data[int(lenx/2)]), origin='lower')
     overlay_indices_slope()
     plt.colorbar()
     plt.title('middle time step')
     
     plt.subplot(247)
-    plt.imshow(slope_to_grid(slope_x.data[length-1]), origin='lower')
+    plt.imshow(slope_to_grid(slope_x.data[lenx-1]), origin='lower')
     overlay_indices_slope()
     plt.colorbar()
     plt.title('last time step')
@@ -158,13 +161,13 @@ def telemvisualizer(subdirectory,filenum,save=False):
     plt.title('first time step')
     
     plt.subplot(242)
-    plt.imshow(slope_to_grid(slope_y.data[int(length/2)]), origin='lower',vmin = ymin, vmax = ymax)
+    plt.imshow(slope_to_grid(slope_y.data[int(leny/2)]), origin='lower',vmin = ymin, vmax = ymax)
     overlay_indices_slope()
     plt.colorbar()
     plt.title('middle time step')
     
     plt.subplot(243)
-    plt.imshow(slope_to_grid(slope_y.data[length-1]), origin='lower',vmin = ymin, vmax = ymax)
+    plt.imshow(slope_to_grid(slope_y.data[leny-1]), origin='lower',vmin = ymin, vmax = ymax)
     overlay_indices_slope()
     plt.colorbar()
     plt.title('last time step')
@@ -185,13 +188,13 @@ def telemvisualizer(subdirectory,filenum,save=False):
     plt.title('first time step')
     
     plt.subplot(246)
-    plt.imshow(slope_to_grid(slope_y.data[int(length/2)]), origin='lower')
+    plt.imshow(slope_to_grid(slope_y.data[int(leny/2)]), origin='lower')
     overlay_indices_slope()
     plt.colorbar()
     plt.title('middle time step')
     
     plt.subplot(247)
-    plt.imshow(slope_to_grid(slope_y.data[length-1]), origin='lower')
+    plt.imshow(slope_to_grid(slope_y.data[leny-1]), origin='lower')
     overlay_indices_slope()
     plt.colorbar()
     plt.title('last time step')
@@ -216,13 +219,13 @@ def telemvisualizer(subdirectory,filenum,save=False):
     plt.title('first time step')
     
     plt.subplot(242)
-    plt.imshow(subaps_to_grid(intensity_map.data[int(length/2)]), origin='lower',vmin = intensmin, vmax = intensmax)
+    plt.imshow(subaps_to_grid(intensity_map.data[int(leni/2)]), origin='lower',vmin = intensmin, vmax = intensmax)
     overlay_indices()
     plt.colorbar()
     plt.title('middle time step')
     
     plt.subplot(243)
-    plt.imshow(subaps_to_grid(intensity_map.data[length-1]), origin='lower',vmin = intensmin, vmax = intensmax)
+    plt.imshow(subaps_to_grid(intensity_map.data[leni-1]), origin='lower',vmin = intensmin, vmax = intensmax)
     overlay_indices()
     plt.colorbar()
     plt.title('last time step')
@@ -243,13 +246,13 @@ def telemvisualizer(subdirectory,filenum,save=False):
     plt.title('first time step')
     
     plt.subplot(246)
-    plt.imshow(subaps_to_grid(intensity_map.data[int(length/2)]), origin='lower')
+    plt.imshow(subaps_to_grid(intensity_map.data[int(leni/2)]), origin='lower')
     overlay_indices()
     plt.colorbar()
     plt.title('middle time step')
     
     plt.subplot(247)
-    plt.imshow(subaps_to_grid(intensity_map.data[length-1]), origin='lower')
+    plt.imshow(subaps_to_grid(intensity_map.data[leni-1]), origin='lower')
     overlay_indices()
     plt.colorbar()
     plt.title('last time step')
@@ -275,13 +278,13 @@ def telemvisualizer(subdirectory,filenum,save=False):
     plt.title('first time step')
     
     plt.subplot(242)
-    plt.imshow(newpos_to_grid(new_pos.data[int(length/2)]), origin='lower',vmin = newposmin, vmax = newposmax)
+    plt.imshow(newpos_to_grid(new_pos.data[int(lenn/2)]), origin='lower',vmin = newposmin, vmax = newposmax)
     overlay_indices_newpos()
     plt.colorbar()
     plt.title('middle time step')
     
     plt.subplot(243)
-    plt.imshow(newpos_to_grid(new_pos.data[length-1]), origin='lower',vmin = newposmin, vmax = newposmax)
+    plt.imshow(newpos_to_grid(new_pos.data[lenn-1]), origin='lower',vmin = newposmin, vmax = newposmax)
     overlay_indices_newpos()
     plt.colorbar()
     plt.title('last time step')
@@ -301,13 +304,13 @@ def telemvisualizer(subdirectory,filenum,save=False):
     plt.title('first time step')
     
     plt.subplot(246)
-    plt.imshow(newpos_to_grid(new_pos.data[int(length/2)]), origin='lower')
+    plt.imshow(newpos_to_grid(new_pos.data[int(lenn/2)]), origin='lower')
     overlay_indices_newpos()
     plt.colorbar()
     plt.title('middle time step')
     
     plt.subplot(247)
-    plt.imshow(newpos_to_grid(new_pos.data[length-1]), origin='lower')
+    plt.imshow(newpos_to_grid(new_pos.data[lenn-1]), origin='lower')
     overlay_indices_newpos()
     plt.colorbar()
     plt.title('last time step')
@@ -326,9 +329,9 @@ def telemvisualizer(subdirectory,filenum,save=False):
     #Tip/tilt as a function of time
     
     #pulling out the 120th and 122nd index for each time step
-    tt_1 = np.zeros(length)
-    tt_2 = np.zeros(length)
-    for i in range(0,length):
+    tt_1 = np.zeros(lenn)
+    tt_2 = np.zeros(lenn)
+    for i in range(0,lenn):
         tt_1[i] = new_pos.data[i][120]
         tt_2[i] = new_pos.data[i][122]
         
@@ -348,8 +351,8 @@ def telemvisualizer(subdirectory,filenum,save=False):
     
     #pinned actuators as a function of time
     
-    pinned = np.zeros(length)
-    for i in range(0,length):
+    pinned = np.zeros(lenn)
+    for i in range(0,lenn):
         for j in range(0,120):
             if new_pos.data[i][j] <= 100 or new_pos.data[i][j] >= 64900:
                 pinned[i] = pinned[i] + 1
