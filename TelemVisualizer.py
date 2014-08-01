@@ -9,14 +9,39 @@ def telemvisualizer(subdirectory,filenum,save=False):
     
     from matplotlib import pyplot as plt
     import numpy as np
+    import os.path
     
     from kapaolibplus import (subaps_to_grid, overlay_indices, Slopes, IntensityMap, DMPositions, newpos_to_grid, overlay_indices_newpos, slope_to_grid, overlay_indices_slope)
         
+    
+    filenum1, filenum2 = filenum.split('_')
+
     
     SLOPE_X_FILE = './' + subdirectory + '/' + 'slope_x_' + filenum + '.tel'
     SLOPE_Y_FILE = './' + subdirectory + '/' + 'slope_y_' + filenum + '.tel'
     INTENSITY_MAP = './' + subdirectory + '/' + 'intensity_map_' + filenum + '.tel'
     NEWPOS_FILE = './' + subdirectory + '/' + 'new_pos_' + filenum + '.tel'
+
+    if os.path.isfile(SLOPE_X_FILE)==False:
+        SLOPE_X_FILE = './' + subdirectory + '/' + 'slope_x_' + filenum1 + '_' + str(int(filenum2)-1) + '.tel'
+        if os.path.isfile(SLOPE_X_FILE) == False:
+            SLOPE_X_FILE = './' + subdirectory + '/' + 'slope_x_' + filenum1 + '_' + str(int(filenum2)+1) + '.tel'
+    if os.path.isfile(SLOPE_Y_FILE)==False:
+        SLOPE_Y_FILE = './' + subdirectory + '/' + 'slope_y_' + filenum1 + '_' + str(int(filenum2)-1) + '.tel'
+        if os.path.isfile(SLOPE_Y_FILE) == False:
+            SLOPE_Y_FILE = './' + subdirectory + '/' + 'slope_y_' + filenum1 + '_' + str(int(filenum2)+1) + '.tel'
+    if os.path.isfile(INTENSITY_MAP)==False:
+        INTENSITY_MAP = './' + subdirectory + '/' + 'intensity_map_' + filenum1 + '_' + str(int(filenum2)-1) + '.tel'
+        if os.path.isfile(INTENSITY_MAP) == False:
+            INTENSITY_MAP = './' + subdirectory + '/' + 'intensity_map_' + filenum1 + '_' + str(int(filenum2)+1) + '.tel'
+    if os.path.isfile(NEWPOS_FILE)==False:
+        NEWPOS_FILE = './' + subdirectory + '/' + 'new_pos_' + filenum1 + '_' + str(int(filenum2)-1) + '.tel'
+        if os.path.isfile(NEWPOS_FILE) == False:
+            NEWPOS_FILE = './' + subdirectory + '/' + 'new_pos_' + filenum1 + '_' + str(int(filenum2)+1) + '.tel'
+  
+
+
+
     
     slope_x, slope_y, intensity_map = Slopes(SLOPE_X_FILE), Slopes(SLOPE_Y_FILE), IntensityMap(INTENSITY_MAP)
     new_pos = DMPositions(NEWPOS_FILE)
@@ -147,7 +172,7 @@ def telemvisualizer(subdirectory,filenum,save=False):
     plt.colorbar()
     plt.title('median slopes')
     
-    plt.suptitle('X Slope Maps, Fixed and Unfixed',fontsize=16)
+    plt.suptitle('X Slope Maps, Fixed and Unfixed ('+filenum+')',fontsize=16)
     
 
     
@@ -205,7 +230,7 @@ def telemvisualizer(subdirectory,filenum,save=False):
     plt.colorbar()
     plt.title('median slopes')
     
-    plt.suptitle('Y Slope Maps, Fixed and Unfixed',fontsize=16)
+    plt.suptitle('Y Slope Maps, Fixed and Unfixed ('+filenum+')',fontsize=16)
     
 
     
@@ -263,7 +288,7 @@ def telemvisualizer(subdirectory,filenum,save=False):
     plt.colorbar()
     plt.title('median intensity')
     
-    plt.suptitle('Intensity Maps, Fixed and Unfixed',fontsize=16)
+    plt.suptitle('Intensity Maps, Fixed and Unfixed ('+filenum+')',fontsize=16)
     
 
     
@@ -321,7 +346,7 @@ def telemvisualizer(subdirectory,filenum,save=False):
     plt.colorbar()
     plt.title('median positions')
     
-    plt.suptitle('DM Position (New_Pos) Maps, Fixed and Unfixed',fontsize=16)
+    plt.suptitle('DM Position (New_Pos) Maps, Fixed and Unfixed ('+filenum+')',fontsize=16)
 
 
     
@@ -338,13 +363,13 @@ def telemvisualizer(subdirectory,filenum,save=False):
     figtime = plt.figure(figsize=(12,9))
     plt.subplots_adjust(hspace=.5)
     plt.subplot(3,1,1)
-    plt.plot(new_pos.timestamps - new_pos.timestamps[0],tt_1)
-    plt.ylabel("Tip/tilt index 120")
+    plt.plot(new_pos.timestamps - new_pos.timestamps[0],tt_1,'.')
+    plt.ylabel("T/t 120 (L/R? PDVShow)")
     plt.title('Tip/Tilt as  Function of Time',fontsize=16)
     
     plt.subplot(3,1,2)
-    plt.plot(new_pos.timestamps - new_pos.timestamps[0],tt_2)
-    plt.ylabel("Tip/tilt index 122")
+    plt.plot(new_pos.timestamps - new_pos.timestamps[0],tt_2,'.')
+    plt.ylabel("T/t 122 (U/D? PDVShow)")
     plt.xlabel("Time (ms)")
     
     
@@ -358,10 +383,13 @@ def telemvisualizer(subdirectory,filenum,save=False):
                 pinned[i] = pinned[i] + 1
                 
     plt.subplot(3,1,3)
-    plt.plot(new_pos.timestamps - new_pos.timestamps[0],pinned)
+    plt.plot(new_pos.timestamps - new_pos.timestamps[0],pinned,'.')
     plt.ylabel("Number of pinned actuators")
     plt.xlabel("Time (ms)")
     plt.title("Pinned Actuators as a Function of Time",fontsize=16)
+
+    plt.suptitle('Tip/tilt and pinned actuators ('+filenum+')',fontsize=16) 
+
     
     if save == True:
         figtime.savefig('./' + subdirectory + '/' + 'fig_tt_pinned_' + filenum + '.png', dpi=300)   
